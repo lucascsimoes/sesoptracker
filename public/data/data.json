@@ -1,0 +1,38 @@
+[
+    {
+        "item": "0000000",
+        "patrimonio": "000000",
+        "nome": "DGPES-SESOP-07",
+        "tipo": "PC",
+        "local": "407",
+        "emManutencao": false,
+        "historico": [{
+            "data": "04/10/2023",
+            "descricao": "Registrado no sistema"
+        }]
+    },
+    {
+        "item": "1111111",
+        "patrimonio": "111111",
+        "nome": "DGPES-SESOP-08",
+        "tipo": "PC",
+        "local": "407",
+        "emManutencao": true,
+        "historico": [{
+            "data": "04/10/2023",
+            "descricao": "Registrado no sistema"
+        }]
+    },
+    {
+        "item": "2222222",
+        "patrimonio": "222222",
+        "nome": "DGPES-SESOP-09",
+        "tipo": "Monitor",
+        "local": "408",
+        "emManutencao": false,
+        "historico": [{
+            "data": "04/10/2023",
+            "descricao": "Registrado no sistema"
+        }]
+    }
+]

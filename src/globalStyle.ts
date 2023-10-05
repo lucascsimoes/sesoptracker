@@ -58,7 +58,10 @@ const GlobalStyle = createGlobalStyle `
     :root {
         --primary-background: #1C1C1C;
         --secondary-background: #282828;
+        --terciary-background: #383838;
         --primary: #8DE786;
+
+        --red: #d33f3f;
     }
 
     * {
