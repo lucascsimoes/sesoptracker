@@ -3,39 +3,11 @@ import styled from "styled-components";
 export const Container = styled.div `
     position: relative;
     width: 260px;
-    min-height: 300px;
+    min-height: 320px;
     background: var(--secondary-background);
     border-radius: 10px;
     overflow: hidden;
-    padding: 45px 20px 20px;
-    cursor: pointer;
-    transition: transform .35s;
-
-    &:hover {
-        transform: translateY(-15px);
-        transition: transform .35s;
-    }
-
-    /* &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        background-color: var(--primary);
-        box-shadow: 0px 0px 30px 5px var(--primary);
-        transition: width .5s, opacity .3s;
-    }
-
-    &:hover::after {
-        opacity: 1;
-        width: 100%;
-        transition: width .5s, opacity .3s;
-    } */
+    padding: 45px 20px 0;
 
     .manutencao {
         position: absolute;
@@ -60,15 +32,26 @@ export const Container = styled.div `
         }
     }
 
-    h1 {
+    & > p {
+        color: var(--primary);
+        font-weight: 700;
+        margin-bottom: 10px;
         font-style: italic;
-        font-size: 28px;
-        letter-spacing: 1px;
-        margin-bottom: 15px;
     }
 
-    & > :nth-last-child(2) {
-        border: none;
+    & > h1 {
+        display: flex;
+        align-items: flex-end;
+        font-size: 34px;
+        margin-bottom: 20px;
+
+        span {
+            font-weight: 400;
+            font-size: 18px;
+            opacity: .4;
+            margin-left: 10px;
+            transform: translateY(-5px);
+        }
     }
 `
 
@@ -76,8 +59,7 @@ export const Info = styled.div `
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-block: 8px;
-    border-bottom: 1px solid var(--terciary-background);
+    padding-block: 5px;
 
     p {
         opacity: .7;
@@ -85,6 +67,80 @@ export const Info = styled.div `
     }
 
     span {
-        font-size: 15px;
+        font-size: 14px;
+    }
+`
+
+export const Commands = styled.div `
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 1px;
+    margin-top: 30px;
+    border-radius: 5px;
+    overflow: hidden;
+
+    & > * {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        height: 32px;
+        background: var(--terciary-background);
+        cursor: pointer;
+        transition: background .25s;
+        border-bottom: 3px solid var(--primary-background);
+
+        &:hover {
+            border-bottom: 3px solid transparent;
+            transition: background .25s;
+
+            svg {
+                filter: brightness(30%);
+            }
+        }
+    }
+
+    svg {
+        min-width: 20px;
+        width: 0;
+        fill: white;
+        opacity: .6;
+    }
+
+    .historic:hover {
+        background: var(--primary);
+        
+        svg {
+            fill: var(--primary);
+
+            path {
+                color: var(--primary);
+            }
+        }
+    }
+
+    .edit:hover {
+        background: var(--yellow);
+
+        svg {
+            fill: var(--yellow);
+
+            path {
+                color: var(--yellow);
+            }
+        }
+    }
+
+    .delete:hover {
+        background: var(--red);
+
+        svg {
+            fill: var(--red);
+
+            path {
+                color: var(--red);
+            }
+        }
     }
 `

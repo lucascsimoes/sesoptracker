@@ -38,6 +38,8 @@ export const Filters = styled.div `
 
 export const List = styled.div `
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 80px;
 `

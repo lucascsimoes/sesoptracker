@@ -22,7 +22,9 @@ interface EquipmentList {
 
 export default () => {
 
-    const [data, setData] = useState<any>(null)
+    const [historicData, setHistoricData] = useState<EquipmentList>();
+
+    const [data, setData] = useState<EquipmentList>()
     useEffect(() => {
         fetch("./data/data.json")
             .then(r => r.json())
@@ -31,8 +33,8 @@ export default () => {
     }, [])
 
     useEffect(() => {
-        console.log(data)
-    }, [data])
+        console.log(historicData)
+    }, [historicData])
 
     // const [search, setSearch] = useState('');
     // useEffect(() => {
@@ -50,14 +52,16 @@ export default () => {
             </Styled.Filters>
 
             <Styled.List>
-                { data == null || data.length == 0 ?
+                { data == null || Array(data).flat().length == 0 ?
                     <>
                     <h2> Não foi encontrado nenhum equipamento </h2>
                     <p> Tente alterar os filtros. Se mesmo assim não conseguir, tente novamente mais tarde </p>
                     </>
                     :
-                    data.map((item:EquipmentList) => (
-                        <Equipment data={item}/>
+                    Array(data).flat().map((item:EquipmentList) => (
+                        <Equipment 
+                            data={item}
+                            openHistoric={setHistoricData}/>
                     ))
                 }
             </Styled.List>

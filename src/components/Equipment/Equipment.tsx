@@ -16,10 +16,12 @@ interface EquipmentListProps {
         local: string,
         emManutencao: boolean,
         historico: EquipmentHistoricProps[]
-    }
+    },
+
+    openHistoric: Function
 }
 
-export default ({ data }:EquipmentListProps) => {
+export default ({ data, openHistoric }:EquipmentListProps) => {
     return (
         <Styled.Container>
             {data.emManutencao &&
@@ -29,7 +31,8 @@ export default ({ data }:EquipmentListProps) => {
                 </div>
             }
 
-            {/* <h1> { data.tipo } </h1>
+            <p> { data.tipo } </p>
+            <h1> { data.patrimonio } <span> patrimônio </span> </h1>
 
             <Styled.Info>
                 <p> local: </p>
@@ -46,11 +49,19 @@ export default ({ data }:EquipmentListProps) => {
             <Styled.Info>
                 <p> nome: </p>
                 <span> { data.nome } </span>
-            </Styled.Info> */}
+            </Styled.Info>
 
-            <div>
-
-            </div>
+            <Styled.Commands>
+                <div className='historic' onClick={() => openHistoric(data)}>
+                    <svg viewBox="0 0 512 512"><path d="M112.91 128A191.85 191.85 0 0064 254c-1.18 106.35 85.65 193.8 192 194 106.2.2 192-85.83 192-192 0-104.54-83.55-189.61-187.5-192a4.36 4.36 0 00-4.5 4.37V152" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="38"/><path d="M233.38 278.63l-79-113a8.13 8.13 0 0111.32-11.32l113 79a32.5 32.5 0 01-37.25 53.26 33.21 33.21 0 01-8.07-7.94z"/></svg>
+                </div>
+                <div className='edit'>
+                    <svg viewBox="0 0 512 512"><path d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="38"/><path d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z"/></svg>
+                </div>
+                <div className='delete'>
+                    <svg viewBox="0 0 512 512"><path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="38" d="M368 368L144 144M368 144L144 368"/></svg>
+                </div>
+            </Styled.Commands>
         </Styled.Container>
     )
 }

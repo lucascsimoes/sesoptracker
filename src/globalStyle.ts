@@ -59,9 +59,15 @@ const GlobalStyle = createGlobalStyle `
         --primary-background: #1C1C1C;
         --secondary-background: #282828;
         --terciary-background: #383838;
+
         --primary: #8DE786;
+        --primary-opacity: #8DE78620;
+
+        --yellow: #dfbb47;
+        --yellow-opacity: #dfbb4720;
 
         --red: #d33f3f;
+        --red-opacity: #d33f3f20;
     }
 
     * {

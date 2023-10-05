@@ -38,6 +38,7 @@ export const FiltersContainer = styled.div<FiltersContainerProps> `
     height: 100%;
     background: transparent;
     transition: background .5s;
+    z-index: 5;
 
     &.entering {
         background: #0000005d;
