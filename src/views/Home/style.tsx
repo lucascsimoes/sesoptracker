@@ -36,10 +36,22 @@ export const Filters = styled.div `
     gap: 20px;
 `
 
-export const List = styled.div `
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 80px;
+export const Table = styled.div `
+    margin-top: 40px;
+
+    header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border-bottom: 1px solid var(--secondary-background);
+
+        p {
+            flex: 1;
+            padding: 20px 25px;
+            opacity: .4;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+    }
 `

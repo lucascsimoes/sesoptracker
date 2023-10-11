@@ -60,7 +60,7 @@ const GlobalStyle = createGlobalStyle `
         --secondary-background: #282828;
         --terciary-background: #383838;
 
-        --primary: #8DE786;
+        --primary: #5bba54;
         --primary-opacity: #8DE78620;
 
         --yellow: #dfbb47;
@@ -68,6 +68,8 @@ const GlobalStyle = createGlobalStyle `
 
         --red: #d33f3f;
         --red-opacity: #d33f3f20;
+
+        --gray: #757575;
     }
 
     * {
@@ -82,6 +84,10 @@ const GlobalStyle = createGlobalStyle `
     html, body {
         min-height: 100vh;
         background: var(--primary-background);
+    }
+
+    body.modal-open {
+        overflow: hidden;
     }
 `
 

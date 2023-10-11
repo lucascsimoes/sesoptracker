@@ -26,11 +26,18 @@ export default () => {
 
     const [data, setData] = useState<EquipmentList>()
     useEffect(() => {
+        fetchData()
+    }, [])
+
+    function fetchData() {
         fetch("./data/data.json")
             .then(r => r.json())
             .then(r => setData(r))
-            .catch(e => console.error("Não foi possível acessar os dados. ", e))
-    }, [])
+            .catch(e => {
+                console.error("Não foi possível acessar os dados. ", e)
+                setData(undefined)
+            })
+    }
 
     useEffect(() => {
         console.log(historicData)
@@ -51,20 +58,28 @@ export default () => {
                 <Filter />
             </Styled.Filters>
 
-            <Styled.List>
-                { data == null || Array(data).flat().length == 0 ?
-                    <>
-                    <h2> Não foi encontrado nenhum equipamento </h2>
-                    <p> Tente alterar os filtros. Se mesmo assim não conseguir, tente novamente mais tarde </p>
-                    </>
-                    :
-                    Array(data).flat().map((item:EquipmentList) => (
+            
+            { data == undefined || Array(data).flat().length == 0 ?
+                <>
+                <h2> Não foi encontrado nenhum equipamento </h2>
+                <p> Tente alterar os filtros. Se mesmo assim não conseguir, tente novamente mais tarde </p>
+                </>
+                :
+                <Styled.Table>
+                    <header>
+                        <p> Tipo </p>
+                        <p> Patrimônio </p>
+                        <p> Item </p>
+                        <p> Nome </p>
+                        <p> Local </p>
+                    </header>
+                    {Array(data).flat().map((item:EquipmentList) => (
                         <Equipment 
                             data={item}
                             openHistoric={setHistoricData}/>
-                    ))
-                }
-            </Styled.List>
+                    ))}   
+                </Styled.Table>
+            }
         </Styled.Container>
     )
 }
