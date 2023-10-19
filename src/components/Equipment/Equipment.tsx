@@ -16,12 +16,10 @@ interface EquipmentListProps {
         local: string,
         emManutencao: boolean,
         historico: EquipmentHistoricProps[]
-    },
-
-    openHistoric: Function
+    }
 }
 
-export default ({ data, openHistoric }:EquipmentListProps) => {
+export default ({ data }:EquipmentListProps) => {
     return (
         <Styled.Container>
             <p> { data.tipo } </p>

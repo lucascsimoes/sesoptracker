@@ -46,11 +46,10 @@ export const Container = styled.form `
         position: relative;
         max-width: 40vw;
         width: 100%;
-        padding: 80px 40px;
+        padding: 120px 40px;
 
         h2 {
             text-align: center;
-            margin-bottom: 80px;
         }
     }
 `
@@ -184,4 +183,57 @@ export const ToDoItem = styled.div<ToDoItemProps> `
             }
         }
     }
+`
+
+interface SwitchTabsProps {
+    value: number
+}
+
+export const SwitchTabs = styled.div<SwitchTabsProps> `
+    display: flex;
+    align-items: center;
+    position: relative;
+    border-bottom: 1px solid var(--secondary-background);
+    margin-block: 80px 40px;
+
+    & > * {
+        flex: 1;
+    }
+
+    &:after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 4px;
+        bottom: 0;
+        margin-left: ${({ value }) => value == 1 ? "50%" : "0"};
+        transition: margin-left .2s;
+        background: var(--primary);
+    }
+`
+
+interface TabProps {
+    active: boolean
+}
+
+export const Tab = styled.p<TabProps> `
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    text-align: center;
+    height: 60px;
+    cursor: pointer;
+    color: ${({ active }) => active ? "var(--primary)" : "white"};
+    opacity: ${({ active }) => active ? "1" : ".3"};
+    text-transform: uppercase;
+    font-size: 14px;
+`
+
+interface PanelProps {
+    visible: boolean
+}
+
+export const Panel = styled.div<PanelProps> `
+    display: ${({ visible }) => visible ? "block" : "none"};
 `

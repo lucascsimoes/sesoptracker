@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import * as Styled from './style'
 
-import { Transition  } from 'react-transition-group'
+import { Transition } from 'react-transition-group'
 
 export default () => {
 
@@ -32,7 +32,7 @@ export default () => {
         <Transition in={isOpen} timeout={300} unmountOnExit>
             {(state:string) => (
                 <Styled.FiltersContainer className={state}
-                    onClick={e => checkInsideModal(e)}>
+                    onClick={(e:any) => checkInsideModal(e)}>
                     <main>
                         <header>
                             <svg onClick={toggleModal} viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 368L144 144M368 144L144 368"/></svg>
