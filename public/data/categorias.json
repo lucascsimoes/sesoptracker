@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "category": "Informática",
+        "value": "informatica"
+    },
+    {
+        "id": 2,
+        "category": "Mobília",
+        "value": "mobilia"
+    },
+    {
+        "id": 3,
+        "category": "Telefonia",
+        "value": "telefonia"
+    },
+    {
+        "id": 4,
+        "category": "Audiovisual",
+        "value": "audiovisual"
+    }
+]

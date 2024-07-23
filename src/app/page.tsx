@@ -1,113 +1,103 @@
-import Image from "next/image";
+"use client"
+
+import { Metadata } from "next";
+
+import FeedbackException from "@/components/FeedbackException";
+import { Input } from "@/components/ui/input";
+import { Combobox } from "@/components/ui/combobox";
+import { Button } from "@/components/ui/button";
+import { FormEvent, useEffect, useState } from "react";
+import Loading from "@/components/Loading";
+import SearchEquipment from "@/components/SearchEquipment";
+
+import { IEquipment } from "@/interfaces/IEquipment";
+
+// export const metadata: Metadata = {
+//   title: "Início - SESOPtracker",
+//   description: "Localize o que faz",
+// };
+
+const types = [
+  {
+    value: "patrimonio",
+    label: "Patrimônio",
+  },
+  {
+    value: "numero de item",
+    label: "Número de Item",
+  },
+  {
+    value: "lotacao",
+    label: "Lotação",
+  }
+]
 
 export default function Home() {
+
+  const [loadingData, setLoadingData] = useState<boolean>(false)
+  const [selectType, setSelectType] = useState<string>("")
+  const [equipmentIdentifier, setEquipmentIdentifier] = useState("")
+
+  const [searchResults, setSearchResults] = useState<IEquipment[]>([]);
+
+  const [error, setError] = useState<string | null>(null)
+  const handleSearch = async (e: FormEvent) => {
+    e.preventDefault()
+    setLoadingData(true)
+
+    if (selectType == "" || equipmentIdentifier == "") {
+      setError("Informe tipo e o equipamento")
+      setLoadingData(false)
+      return
+    } 
+
+    const response = await fetch(`/data/equipamentos.json`);
+    const data: IEquipment[] = await response.json();
+
+    const filteredResults = data.filter(item => {
+      const info = item[selectType == "patrimonio" ? "Patrimonio" : selectType == "lotacao" ? "Lotacao" : "Item"]
+      return info !== null && info.toString().toLowerCase().includes(equipmentIdentifier.toLowerCase())
+    });
+
+    if (!filteredResults.length) { 
+      setError("Equipamento não encontrado") 
+    }
+
+    setSearchResults(filteredResults);
+    setLoadingData(false)
+  }
+
+  useEffect(() => {
+    setError(null)
+  }, [selectType, equipmentIdentifier])
+
+  if (searchResults.length) return <SearchEquipment list={searchResults}/>
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center h-full px-12 lg:px-0">
+      <h1 className="text-2xl font-semibold text-center"> Localize um equipamento </h1>
+      <p className="mb-5 opacity-60 text-center max-w-[600px] mx-auto mt-2"> Selecione um tipo entre patrimônio, número de item e nome, e informe a identificação na caixa de texto </p>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      { error !== null &&
+        <FeedbackException> { error } </FeedbackException>
+      }
+
+      <form className="grid grid-rows-3 grid-cols-1 sm:grid-rows-2 sm:grid-cols-[200px_auto] xl:grid-cols-[200px_auto_100px] xl:grid-rows-1 gap-2 max-w-full lg:max-w-[60%] w-full mx-auto mt-5" onSubmit={handleSearch}>
+        <Combobox 
+          className="h-14 max-w-full sm:max-w-[200px]"
+          items={types} 
+          placeholder="Selecione um tipo..."
+          onSelect={(value) => setSelectType(value)}
         />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <Input 
+          className="h-14 text-lg placeholder:text-[16px]" 
+          placeholder="Localize um equipamento"
+          value={equipmentIdentifier}
+          onChange={(e) => setEquipmentIdentifier(e.target.value)}
+        />
+        
+        <Button type="submit" className="sm:col-span-2 xl:w-fit xl:col-auto bg-primary h-14 text-black font-normal"> { loadingData ? <Loading/> : "Localizar equipamento" } </Button>
+      </form>
+    </div>
   );
 }
