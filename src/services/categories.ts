@@ -6,7 +6,7 @@ interface CategoryProps {
     value: string
 }
 
-export const categoryService = {
+export const CategoryService = {
     get: () => {
         const [data, setData] = useState<CategoryProps[]>([])
         const [isLoading, setLoading] = useState(true)

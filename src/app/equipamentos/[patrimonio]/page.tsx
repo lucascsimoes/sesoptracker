@@ -2,7 +2,7 @@
 
 import { ReactElement } from "react";
 
-import { equipmentService } from "@/services/equipments";
+import { EquipmentService } from "@/services/equipments";
 import { IEquipment } from "@/interfaces/IEquipment";
 import { ITimeline } from "@/interfaces/ITimeline";
 import { statusColor } from "@/services/statusColor";
@@ -16,7 +16,7 @@ import TimelineCard from "@/components/TimelineCard";
 export default function Equipment({ params }: { params: { patrimonio: string } }): ReactElement {
 
     setDefaultOptions({ locale: ptBR })
-    const { data, isLoading, error } = equipmentService.get(params.patrimonio)
+    const { data, isLoading, error } = EquipmentService.get(params.patrimonio)
 
     if (isLoading) return <p> Carregando... </p>
     if (error) return <p> Houve um erro </p>

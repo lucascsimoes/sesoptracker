@@ -3,7 +3,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { equipmentService } from "@/services/equipments";
+import { EquipmentService } from "@/services/equipments";
 import { statusColor } from "@/services/statusColor";
 
 import { IFilter } from "@/interfaces/IFilter";
@@ -76,7 +76,7 @@ function filterEmprestados(data: IEquipment[], show: boolean) {
 
 export default function Equipamentos(): ReactElement {
     
-    const { data, isLoading, error } = equipmentService.get()
+    const { data, isLoading, error } = EquipmentService.get()
     const [filteredData, setFilteredData] = useState<IEquipment[]>([])
 
     const [hash, setHash] = useState<string>(window.location.hash)

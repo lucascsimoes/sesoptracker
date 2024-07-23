@@ -1,13 +1,13 @@
 'use client'
 
 import { ReactElement, useEffect, useState } from "react";
-import { categoryService } from "@/services/categories";
+import { CategoryService } from "@/services/categories";
 
 import CategoryCard from "@/components/CategoryCard";
 
 export default function Categorias(): ReactElement {
 
-    const { data, isLoading } = categoryService.get()
+    const { data, isLoading } = CategoryService.get()
      
     if (isLoading) return <p> Carregando... </p>
     if (!data) return <p> Sem categorias para mostrar </p>

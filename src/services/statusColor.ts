@@ -1,7 +1,3 @@
-interface statusColorProps {
-    status: "Em uso" | "Em manutenção" | "Com defeito" | "Transferido" | "Devolvido" | "Emprestado"
-}
-
 export const statusColor = (status: string): string => {
     switch (status) {
         case "Em manutenção":

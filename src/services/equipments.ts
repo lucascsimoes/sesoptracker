@@ -8,7 +8,7 @@ interface EquipmentTimeline {
     timeline: ITimeline[]
 }
 
-export const equipmentService = {
+export const EquipmentService = {
     get: (id?: string) => {
         const [data, setData] = useState<IEquipment[] | EquipmentTimeline>(
             id === undefined ? [] : { equipment: null, timeline: [] }
