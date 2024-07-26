@@ -1,7 +1,4 @@
-'use client'
-
 import { ReactElement, useEffect, useState } from "react";
-import { CategoryService } from "@/services/categories";
 
 import CategoryCard from "@/components/CategoryCard";
 
@@ -25,12 +22,6 @@ const categories = [
 ]
 
 export default function Categorias(): ReactElement {
-
-    const { data, isLoading } = CategoryService.get()
-     
-    if (isLoading) return <p> Carregando... </p>
-    if (!data) return <p> Sem categorias para mostrar </p>
-
     return (
         <div className="py-10 px-10 md:pt-20 lg:p-20">
             <h1 className="text-2xl font-semibold"> Lista de Categorias </h1>
