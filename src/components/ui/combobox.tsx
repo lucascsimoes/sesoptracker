@@ -20,7 +20,8 @@ import {
 
 interface ComboboxProps {
     value: string;
-    label: string | React.ReactElement;
+    label: string;
+    element?: React.ReactElement
 }
 
 export function Combobox<T extends ComboboxProps>(
@@ -44,8 +45,8 @@ export function Combobox<T extends ComboboxProps>(
           className={`max-w-[200px] w-full justify-between ${ className }`}
         >
           {value
-            ? items.find(item => item.value === value)?.label
-            : items[0]?.label}
+            ? items.find(item => item.value === value)?.element || items.find(item => item.value === value)?.label
+            : items[0]?.element || items[0]?.label}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -68,7 +69,7 @@ export function Combobox<T extends ComboboxProps>(
                       value === item.value ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {item.label}
+                  {item.element || item.label}
                 </CommandItem>
               ))}
             </CommandGroup>

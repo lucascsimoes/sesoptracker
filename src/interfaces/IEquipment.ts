@@ -1,4 +1,5 @@
 export interface IEquipment {
+    id: string
     Patrimonio: number,
     SalaID: string,
     CategoriaID: string,

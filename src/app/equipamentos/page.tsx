@@ -2,8 +2,8 @@
 
 import { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios"
 
-import { EquipmentService } from "@/services/equipments";
 import { statusColor } from "@/services/statusColor";
 
 import { IFilter } from "@/interfaces/IFilter";
@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input";
 import { MagicExit, MagicMotion, MagicTabSelect } from "react-magic-motion";
+import fetcher from "@/services/fetcher";
+import useSWR from "swr";
 
   
 
@@ -32,14 +34,14 @@ const showByList = [
     { value: 'item', label: 'Item' },
 ]
 
-const showStatus = [
+export const showStatus = [
     { value: "todos", label: "Todos" },
-    { value: "em uso", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em uso") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em uso </p></div> },
-    { value: "em manutenção", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em manutenção") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em manutenção </p></div> },
-    { value: "com defeito", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Com defeito") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Com defeito </p></div> },
-    { value: "transferido", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Transferido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Transferido </p></div> },
-    { value: "devolvido", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Devolvido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Devolvido </p></div> },
-    { value: "emprestado", label: <div className="flex items-center gap-4"><div style={{ background: statusColor("Emprestado") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Emprestado </p></div> }
+    { value: "em uso", label: "Em uso", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em uso") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em uso </p></div> },
+    { value: "em manutenção", label: "Em manutenção", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em manutenção") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em manutenção </p></div> },
+    { value: "com defeito", label: "Com defeito", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Com defeito") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Com defeito </p></div> },
+    { value: "transferido", label: "Transferido", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Transferido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Transferido </p></div> },
+    { value: "devolvido", label: "Devolvido", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Devolvido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Devolvido </p></div> },
+    { value: "emprestado", label: "Emprestado", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Emprestado") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Emprestado </p></div> }
 ];
 
 function filterStatus(data: IEquipment[], status: string) {
@@ -74,9 +76,9 @@ function filterEmprestados(data: IEquipment[], show: boolean) {
     return data
 }
 
-export default function Equipamentos(): ReactElement {
-    
-    const { data, isLoading, error } = EquipmentService.get()
+export default function Equipamentos() {
+
+    const { data, error, isLoading } = useSWR([`http://localhost:3001/equipamentos`], fetcher)
     const [filteredData, setFilteredData] = useState<IEquipment[]>([])
 
     const [hash, setHash] = useState<string>(window.location.hash)
@@ -92,18 +94,20 @@ export default function Equipamentos(): ReactElement {
     })
 
     useEffect(() => {
-        if (!isLoading) {
-            const newData = data.map(item => ({
+        if (data !== undefined) {
+            const newData = data.map((item: any) => ({
                 ...item,
                 Item: item.Item == null ? "-" : item.Item
             }))
-    
+
             setFilteredData(newData)
         }
     }, [data])
 
     useEffect(() => {
-        handleDataFilter(filters)
+        if (data !== undefined) {
+            handleDataFilter(filters)
+        }
     }, [filters])
 
     const changeFilters = {
@@ -136,7 +140,7 @@ export default function Equipamentos(): ReactElement {
         }
     }
 
-    function handleDataFilter(filters: IFilter) {
+    async function handleDataFilter(filters: IFilter) {
         const copy = [...data]
         let filtered: IEquipment[]
 
@@ -147,7 +151,7 @@ export default function Equipamentos(): ReactElement {
         setFilteredData(filtered)
     }
 
-    if (isLoading) return <p> Carregando... </p>
+    if (isLoading || data === undefined) return <p> Carregando... </p>
     if (error) return <p> Houve um erro </p>
 
     return (

@@ -1,4 +1,5 @@
 export interface ITimeline {
+    id: string
     Patrimonio: number,
     DataAlteracao: string,
     StatusAnterior: string,

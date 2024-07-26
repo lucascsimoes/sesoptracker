@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "Patrimonio": 902712,
         "DataAlteracao": "2024-05-12",
         "StatusAnterior": "Em uso",
@@ -11,6 +12,7 @@
         "Importante": false
     },
     {
+        "id": 2,
         "Patrimonio": 902712,
         "DataAlteracao": "2024-05-20",
         "StatusAnterior": "Em uso",
@@ -22,6 +24,7 @@
         "Importante": false
     },
     {
+        "id": 3,
         "Patrimonio": 902712,
         "DataAlteracao": "2024-05-28",
         "StatusAnterior": "Com defeito",
@@ -33,6 +36,7 @@
         "Importante": true
     },
     {
+        "id": 4,
         "Patrimonio": 902712,
         "DataAlteracao": "2024-07-05",
         "StatusAnterior": "Em manutenção",

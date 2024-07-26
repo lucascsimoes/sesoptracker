@@ -5,16 +5,9 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ReactElement } from "react";
 
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet"  
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"  
 
-import { IoHomeOutline, IoHome, IoGridOutline, IoGrid, IoCubeOutline, IoCube, IoMapOutline, IoMap, IoFileTrayStacked, IoFileTrayStackedOutline, IoMenu } from "react-icons/io5";
+import { IoHomeOutline, IoHome, IoGridOutline, IoGrid, IoCubeOutline, IoCube, IoMapOutline, IoMap, IoFileTrayStacked, IoFileTrayStackedOutline, IoMenu, IoDownloadOutline, IoDownload } from "react-icons/io5";
 import { Separator } from "./ui/separator";
 
 const links = [
@@ -47,6 +40,12 @@ const links = [
         icon: <IoFileTrayStackedOutline size={21}/>,
         currentIcon: <IoFileTrayStacked size={21}/>,
         path: '/categorias'
+    },
+    {
+        text: 'Relatórios',
+        icon: <IoDownloadOutline size={21}/>,
+        currentIcon: <IoDownload size={21}/>,
+        path: '/relatorios'
     }
 ]
 
