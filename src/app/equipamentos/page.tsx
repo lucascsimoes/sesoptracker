@@ -72,7 +72,7 @@ export default function Equipamentos() {
     const { data, error, isLoading } = useSWR([`http://localhost:3001/equipamentos`], fetcher)
     const [filteredData, setFilteredData] = useState<IEquipment[]>([])
 
-    const [hash, setHash] = useState<string>(window.location.hash)
+    const [hash, setHash] = useState<string>("")
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
 
     const [showBy, setShowBy] = useState<string>("patrimonio")
