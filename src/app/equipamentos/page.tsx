@@ -9,6 +9,7 @@ import { statusColor } from "@/services/statusColor";
 import { IFilter } from "@/interfaces/IFilter";
 import { IEquipment } from "@/interfaces/IEquipment";
 import { Plus, Search, Filter } from 'lucide-react'
+import useSWR from "swr";
 
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
 import { Combobox } from "@/components/ui/combobox";
@@ -17,7 +18,7 @@ import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input";
 import { MagicExit, MagicMotion, MagicTabSelect } from "react-magic-motion";
 import fetcher from "@/services/fetcher";
-import useSWR from "swr";
+import { showStatus } from "@/lists/status";
 
   
 
@@ -33,16 +34,6 @@ const showByList = [
     { value: 'patrimonio', label: 'Patrimônio' },
     { value: 'item', label: 'Item' },
 ]
-
-export const showStatus = [
-    { value: "todos", label: "Todos" },
-    { value: "em uso", label: "Em uso", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em uso") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em uso </p></div> },
-    { value: "em manutenção", label: "Em manutenção", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Em manutenção") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Em manutenção </p></div> },
-    { value: "com defeito", label: "Com defeito", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Com defeito") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Com defeito </p></div> },
-    { value: "transferido", label: "Transferido", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Transferido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Transferido </p></div> },
-    { value: "devolvido", label: "Devolvido", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Devolvido") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Devolvido </p></div> },
-    { value: "emprestado", label: "Emprestado", element: <div className="flex items-center gap-4"><div style={{ background: statusColor("Emprestado") }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> Emprestado </p></div> }
-];
 
 function filterStatus(data: IEquipment[], status: string) {
     if (status != "todos") {

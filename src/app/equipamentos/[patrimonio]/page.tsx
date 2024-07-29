@@ -22,11 +22,11 @@ import * as Yup from 'yup';
 import { IEquipment } from "@/interfaces/IEquipment";
 import { ITimeline } from "@/interfaces/ITimeline";
 import { statusColor } from "@/services/statusColor";
-import { showStatus } from "../page";
 import axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import { revalidatePath } from "next/cache";
 import fetcher from "@/services/fetcher";
+import { showStatus } from "@/lists/status";
 
 
 
