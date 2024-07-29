@@ -35,7 +35,7 @@ const types = [
 export default function Home() {
 
   const [loadingData, setLoadingData] = useState<boolean>(false)
-  const [selectType, setSelectType] = useState<string>("")
+  const [selectType, setSelectType] = useState<string>("patrimonio")
   const [equipmentIdentifier, setEquipmentIdentifier] = useState("")
 
   const [searchResults, setSearchResults] = useState<IEquipment[]>([]);
@@ -74,7 +74,7 @@ export default function Home() {
   if (searchResults.length) return <SearchEquipment list={searchResults}/>
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 lg:px-0">
+    <div className="flex flex-col items-center justify-center min-h-dvh px-12 lg:px-0">
       <h1 className="text-2xl font-semibold text-center"> Localize um equipamento </h1>
       <p className="mb-5 opacity-60 text-center max-w-[600px] mx-auto mt-2"> Selecione um tipo entre patrimônio, número de item e nome, e informe a identificação na caixa de texto </p>
 
@@ -86,7 +86,7 @@ export default function Home() {
         <Combobox 
           className="h-14 max-w-full sm:max-w-[200px]"
           items={types} 
-          placeholder="Selecione um tipo..."
+          value={selectType}
           onSelect={(value) => setSelectType(value)}
         />
         <Input 
