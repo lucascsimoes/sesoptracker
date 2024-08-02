@@ -13,8 +13,7 @@ import axios from "axios";
 import { IEquipment } from "@/interfaces/IEquipment";
 import Loading from "@/components/Loading";
 
-import { BarcodeScanner } from 'react-barcode-scanner'
-import 'react-barcode-scanner/polyfill'
+import { QrReader } from 'react-qr-reader';
 
 const EquipmentSchema = Yup.object().shape({
     salaid: Yup.string()
@@ -44,8 +43,39 @@ const initialValues = {
 }
 
 export default function AddEquipment() {
-    return <BarcodeScanner />
+    
+    const [data, setData] = useState('No result');
+
+    return (
+        <>
+        <p>{data}</p>
+        <QrReader
+            onResult={(result: any, error: any) => {
+            if (!!result) {
+                setData(result?.text);
+            }
+
+            if (!!error) {
+                console.info(error);
+            }
+            }}
+        />
+        
+        </>
+    ) 
 }
+
+{/* <div className="relative w-dvw h-dvh before:content-['']">
+             <div className="absolute top-0 left-0 aspect-square w-dvw h-dvh bg-stone-950/60 z-10 [clip-path:polygon(0%_0%,_0%_100%,_25%_100%,_25%_25%,_75%_25%,_75%_75%,_25%_75%,_25%_100%,_100%_100%,_100%_0%)]"/>
+             <Button className="absolute top-4 left-4 bg-transparent z-20" variant={"secondary"}>
+                 <ChevronLeft/>
+             </Button>
+
+             <BarcodeScanner onCapture={(barcode) => alert(barcode + "aaa")}/>
+         </div> */}
+
+
+
 
 // export default function AddEquipment(): ReactElement {
 
