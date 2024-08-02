@@ -43,7 +43,7 @@ const initialValues = {
     lotacao: ''
 }
 
-export default () => {
+export default function AddEquipment() {
     return <BarcodeScanner />
 }
 
