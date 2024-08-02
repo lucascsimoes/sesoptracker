@@ -1,6 +1,6 @@
 "use client"
 
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 import * as Yup from 'yup'
 import { Field, Form, Formik, ErrorMessage } from "formik";
@@ -42,10 +42,16 @@ const initialValues = {
 
 export default function AddEquipment(): ReactElement {
 
+    const [isMobile, setIsMobile] = useState<boolean>(false)
     const [patrimonio, setPatrimonio] = useState<Pick<IEquipment, "patrimonio"> | null>(null)
     const [currentForm, setCurrentForm] = useState<number>(0)
 
-    const isMobileDevice = /mobile/i.test(navigator.userAgent);
+    useEffect(() => {
+        const isMobileDevice = /mobile/i.test(navigator.userAgent);
+        setIsMobile(isMobileDevice)
+    }, [])
+
+    
     const handleSubmitPatrimonio = async (values: { patrimonio: string }) => {
         try {
             const { data } = await axios.get(`http://localhost:3000/api/equipamentos?patrimonio=${values.patrimonio}`)
@@ -91,7 +97,7 @@ export default function AddEquipment(): ReactElement {
                     <p className="bg-background px-2 text-[12px]"> OU </p>
                 </div>
 
-                <Button disabled={!isMobileDevice} variant={"secondary"} className="flex items-center gap-3 w-full py-7 *:opacity-60">
+                <Button disabled={!isMobile} variant={"secondary"} className="flex items-center gap-3 w-full py-7 *:opacity-60">
                     <ScanBarcode/>
                     <p> Escanear plaqueta </p>
                 </Button>
