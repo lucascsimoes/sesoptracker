@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import TimelineCard from "@/components/TimelineCard";
 
-import { ArrowLeft, Ellipsis, History, Info, MoveRight, Pencil, BarChart, FileOutput, AlertCircle, CircleCheckBig, CircleX, Route } from 'lucide-react';
+import { ArrowLeft, Ellipsis, History, Info, MoveRight, Pencil, BarChart, FileOutput, AlertCircle, CircleCheckBig, CircleX, Route, FileX2 } from 'lucide-react';
 import { MagicTabSelect } from "react-magic-motion";
 import { format, setDefaultOptions } from "date-fns";
 import { ptBR } from "date-fns/locale"
@@ -59,7 +59,7 @@ const SignupSchema = Yup.object().shape({
 
 export default function Equipment({ params }: { params: { patrimonio: string } }): ReactElement {
 
-    const { data, error, isLoading } = useSWR([`http://localhost:3001/historico?Patrimonio=${params.patrimonio}`, `http://localhost:3001/equipamentos?Patrimonio=${params.patrimonio}`], fetcher)
+    const { data, error, isLoading } = useSWR([`http://localhost:3000/api/historico?patrimonio=${params.patrimonio}`, `http://localhost:3000/api/equipamentos?patrimonio=${params.patrimonio}`], fetcher)
 
     const [currentTab, setCurrentTab] = useState<number>(0)
     const handleCurrentTab = (index: number) => setCurrentTab(index)
@@ -80,7 +80,7 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
                 >
                     <ArrowLeft size={18} className="group-hover:opacity-100 opacity-50 transition-all"/>
                 </Button>
-                <h2 className="text-lg font-[500]"> Equipamento { data.equipment.Patrimonio } </h2>
+                <h2 className="text-lg font-[500]"> Equipamento { data.equipment.patrimonio } </h2>
             </header>
 
             <div className="flex gap-4 xl:h-[48px] flex-wrap xl:flex-nowrap">
@@ -89,12 +89,12 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
                 </div>
                 <div className="flex items-center h-[48px] bg-card-foreground rounded px-4 gap-4 ml-auto">
                     <p className="whitespace-nowrap text-sm"> Adicionado em </p>
-                    <p className="p-2 rounded bg-background text-sm"> { format(data.equipment.DataCriacao, "dd/MM/yyyy")  } </p>
+                    <p className="p-2 rounded bg-background text-sm"> { format(data.equipment.datacriacao.split("T")[0], "dd/MM/yyyy")  } </p>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Link href={`/edit/${ data.equipment.Patrimonio }`}>
+                            <Link href={`/edit/${ data.equipment.patrimonio }`}>
                                 <Button variant={"ghost"} className="w-[48px] h-[48px] p-0">
                                     <Pencil size={18}/>
                                 </Button>
@@ -117,32 +117,31 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
 
 function InfosTab(equipment: IEquipment) {
 
-    const { mutate } = useSWRConfig()
     const router = useRouter()
     const { toast } = useToast()
     const [open, setOpen] = useState<boolean>(false)
     const [status, setStatus] = useState<string | null>("")
-    const handleSubmit = (values: { observacao: string, usuario: string }) => {
+    const handleSubmit = async (values: { observacao: string, usuario: string }) => {
         if (status == "" || status == null) {
             setStatus(null)
             return
         }
 
         try {
-            axios.put(`http://localhost:3001/equipamentos/${equipment.id}`, {
-                ...equipment,
-                StatusID: showStatus.find(item => item.value == status)?.label
+            axios.put(`http://localhost:3000/api/equipamentos`, {
+                statusid: showStatus.find(item => item.value == status)?.label,
+                patrimonio: equipment.patrimonio
             })
-            axios.post("http://localhost:3001/historico", {
-                Patrimonio: equipment.Patrimonio,
-                DataAlteracao: format(new Date(), "yyyy-MM-dd"),
-                StatusAnterior: equipment.StatusID,
-                StatusAtual: showStatus.find(item => item.value == status)?.label,
-                Usuario: values.usuario,
-                Descricao: "Status alterado para " + showStatus.find(item => item.value == status)?.label,
-                Observacao: values.observacao || null,
-                Importante: false
-            });
+            axios.post("http://localhost:3000/api/historico", {
+                patrimonio: equipment.patrimonio,
+                dataalteracao: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+                statusanterior: equipment.statusid,
+                statusatual: showStatus.find(item => item.value == status)?.label,
+                usuario: values.usuario,
+                descricao: "Status alterado para " + showStatus.find(item => item.value == status)?.label,
+                observacao: values.observacao || null,
+                importante: false
+            })
         } catch (e: any) {
             toast({
                 description: (
@@ -155,6 +154,7 @@ function InfosTab(equipment: IEquipment) {
             return;
         } finally {
             setOpen(false)
+            router.refresh()
         }
 
         toast({
@@ -170,7 +170,7 @@ function InfosTab(equipment: IEquipment) {
     return (
         <>
             <header className="flex items-center gap-4 mb-8 flex-wrap sm:flex-nowrap">
-                <p className="rounded py-3 px-6 text-black/40 w-full sm:grow whitespace-nowrap" style={{ background: statusColor(equipment.StatusID) }}> { equipment.StatusID } </p>
+                <p className="rounded py-3 px-6 text-black/40 w-full sm:grow whitespace-nowrap" style={{ background: statusColor(equipment.statusid) }}> { equipment.statusid } </p>
                 <Dialog open={open} onOpenChange={open => setOpen(open)}>
                     <DialogTrigger asChild>
                         <Button className="w-full sm:w-fit h-[48px]" variant={"ghost"}> Alterar status </Button>
@@ -210,7 +210,7 @@ function InfosTab(equipment: IEquipment) {
                                 <main className="flex items-end gap-2">
                                     <div className="w-fit">
                                         <p className="text-sm mb-1"> De </p>
-                                        <p style={{ background: statusColor(equipment.StatusID) }} className="flex items-center px-4 rounded h-[40px] text-center text-black/50 text-sm"> { equipment.StatusID } </p>
+                                        <p style={{ background: statusColor(equipment.statusid) }} className="flex items-center px-4 rounded h-[40px] text-center text-black/50 text-sm"> { equipment.statusid } </p>
                                     </div>
                                     <MoveRight className="h-[40px]" strokeWidth={1.25}/>
                                     <div className="grow">
@@ -222,7 +222,7 @@ function InfosTab(equipment: IEquipment) {
                                             <SelectContent>
                                                 { showStatus
                                                     .slice(1)
-                                                    .filter(item => item.value !== equipment.StatusID.toLowerCase())
+                                                    .filter(item => item.value !== equipment.statusid.toLowerCase())
                                                     .map(item => (
                                                         <SelectItem key={item.value} value={item.value}> { item.element } </SelectItem>
                                                 )) }
@@ -254,31 +254,31 @@ function InfosTab(equipment: IEquipment) {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 *:grow *:bg-background *:p-8 *:rounded">
                 <div>
                     <p className="opacity-60"> Patrimônio </p>
-                    <h1 className="text-5xl font-bold"> { equipment.Patrimonio } </h1>
+                    <h1 className="text-5xl font-bold"> { equipment.patrimonio } </h1>
                 </div>
                 <div>
                     <p className="opacity-60"> Item </p>
-                    <h1 className="text-5xl font-bold"> { equipment.Item ?? "-" } </h1>
+                    <h1 className="text-5xl font-bold"> { equipment.item ?? "-" } </h1>
                 </div>
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 my-8 *:grow *:bg-background *:p-4 *:rounded">
                 <div>
                     <p className="opacity-60 text-sm"> Categoria </p>
-                    <h1 className="text-2xl font-bold"> { equipment.CategoriaID } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.categoriaid } </h1>
                 </div>
                 <div>
                     <p className="opacity-60 text-sm"> Tipo </p>
-                    <h1 className="text-2xl font-bold"> { equipment.NomeID } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.nomeid } </h1>
                 </div>
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 *:grow *:bg-background *:p-4 *:rounded">
                 <div>
                     <p className="opacity-60 text-sm"> Lotação </p>
-                    <h1 className="text-2xl font-bold"> { equipment.Lotacao } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.lotacao } </h1>
                 </div>
                 <div>
                     <p className="opacity-60 text-sm"> Sala </p>
-                    <h1 className="text-2xl font-bold"> { equipment.SalaID } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.salaid } </h1>
                 </div>
             </div>
         </>
@@ -287,24 +287,29 @@ function InfosTab(equipment: IEquipment) {
 
 function TimelineTab(timeline: ITimeline[]) {
     const orderArray = Object.values(timeline).sort((a, b) => {
-        const dateA = new Date(a.DataAlteracao).getTime()
-        const dateB = new Date(b.DataAlteracao).getTime()
+        const dateA = new Date(a.dataalteracao).getTime()
+        const dateB = new Date(b.dataalteracao).getTime()
         return dateB - dateA
     })
 
     return (
-        <div className="flex items-center justify-center h-dvh">
-            <div className="w-[1300px] max-w-full mx-auto">
-                <div className="mt-4">
-                        { orderArray.map(item => (
-                            <TimelineCard 
-                                key={`${ item.Descricao }-${item.Observacao}`} 
-                                timeline={item}
-                            />
-                        )) }
-                    </div>
-            </div>
+        <div className="flex items-center justify-center">
+            { timeline.length === 0 ? 
+                <p className="text-lg opacity-50 text-center"> Não há histórico para este equipamento </p>
+                :
+                <div className="w-full">
+                    { orderArray.reverse().map(item => (
+                        <TimelineCard 
+                            key={item.id} 
+                            last={orderArray[orderArray.length - 1].id}
+                            timeline={item}
+                        />
+                    )) }
+                    <p className="text-sm py-2 px-4 rounded bg-secondary text-center text-stone-400"> Hoje, { format(new Date(), "dd/MM/yyyy") } </p>
+                </div>
+            }
         </div>
+        
     )
 }
 

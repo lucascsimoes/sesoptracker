@@ -1,11 +1,11 @@
 export interface IEquipment {
     id: string
-    Patrimonio: number,
-    SalaID: string,
-    CategoriaID: string,
-    StatusID: string,
-    Item: number | null | string,
-    NomeID: string,
-    Lotacao: string,
-    DataCriacao: string
+    patrimonio: number,
+    salaid: string,
+    categoriaid: string,
+    statusid: string,
+    item: number | null | string,
+    nomeid: string,
+    lotacao: string,
+    datacriacao: string
 }

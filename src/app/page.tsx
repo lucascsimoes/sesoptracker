@@ -55,7 +55,7 @@ export default function Home() {
     const data: IEquipment[] = await response.json();
 
     const filteredResults = data.filter(item => {
-      const info = item[selectType == "patrimonio" ? "Patrimonio" : selectType == "lotacao" ? "Lotacao" : "Item"]
+      const info = item[selectType == "patrimonio" ? "patrimonio" : selectType == "lotacao" ? "lotacao" : "item"]
       return info !== null && info.toString().toLowerCase().includes(equipmentIdentifier.toLowerCase())
     });
 

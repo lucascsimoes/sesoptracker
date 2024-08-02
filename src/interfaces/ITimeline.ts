@@ -1,12 +1,11 @@
 export interface ITimeline {
-    id: string
-    Patrimonio: number,
-    DataAlteracao: string,
-    StatusAnterior: string,
-    StatusAtual: string,
-    Usuario: string,
-    Descricao: string,
-    Observacao: string | null,
-    Desconsiderar: boolean,
-    Importante: boolean
+    id: number
+    patrimonio: number,
+    dataalteracao: string,
+    statusanterior: string,
+    statusatual: string,
+    usuario: string,
+    descricao: string,
+    observacao: string | null,
+    importante: boolean
 }

@@ -37,7 +37,7 @@ const showByList = [
 
 function filterStatus(data: IEquipment[], status: string) {
     if (status != "todos") {
-        return data.filter(item => item.StatusID.toLowerCase() == status)
+        return data.filter(item => item.statusid.toLowerCase() == status)
     }
 
     return data
@@ -45,7 +45,7 @@ function filterStatus(data: IEquipment[], status: string) {
 
 function filterTransferidos(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.StatusID != "Transferido")
+        return data.filter(item => item.statusid != "Transferido")
     }
 
     return data
@@ -53,7 +53,7 @@ function filterTransferidos(data: IEquipment[], show: boolean) {
 
 function filterDevolvidos(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.StatusID != "Devolvido")
+        return data.filter(item => item.statusid != "Devolvido")
     }
 
     return data
@@ -61,7 +61,7 @@ function filterDevolvidos(data: IEquipment[], show: boolean) {
 
 function filterEmprestados(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.StatusID != "Emprestado")
+        return data.filter(item => item.statusid != "Emprestado")
     }
 
     return data
@@ -69,7 +69,7 @@ function filterEmprestados(data: IEquipment[], show: boolean) {
 
 export default function Equipamentos() {
 
-    const { data, error, isLoading } = useSWR([`http://localhost:3001/equipamentos`], fetcher)
+    const { data, error, isLoading } = useSWR([`http://localhost:3000/api/equipamentos`], fetcher)
     const [filteredData, setFilteredData] = useState<IEquipment[]>([])
 
     const [hash, setHash] = useState<string>("")
@@ -217,7 +217,7 @@ export default function Equipamentos() {
                                 </div>
                             ) }
                             <p className={`group-hover:opacity-100 transition ml-5 mr-auto ${ hash == link.value ? "opach-fullity-100" : "opacity-50" }`}> { link.label } </p>
-                            <span className={`group-hover:opacity-100 text-[11px] font-medium transition ${ hash == link.value ? "opacity-100" : "opacity-50" }`}> { link.label != "Todos" && filteredData.filter(equipmnent => equipmnent.CategoriaID == link.label).length } </span>
+                            <span className={`group-hover:opacity-100 text-[11px] font-medium transition ${ hash == link.value ? "opacity-100" : "opacity-50" }`}> { link.label != "Todos" && filteredData.filter(equipmnent => equipmnent.categoriaid == link.label).length } </span>
                         </Link>
                     )) }
                 </div>
@@ -311,21 +311,21 @@ export default function Equipamentos() {
                                 <h2 className="block w-full text-lg font-[500]"> { link.label } </h2>
                                 { filteredData
                                     .filter(item => {
-                                        const key = showBy == "patrimonio" ? "Patrimonio" : "Item"
+                                        const key = showBy == "patrimonio" ? "patrimonio" : "item"
                                         return item[key]?.toString().includes(search)
                                     })
-                                    .filter(item => item.CategoriaID == link.label)
+                                    .filter(item => item.categoriaid == link.label)
                                     .map(equipment => (
-                                        <Link key={equipment.Patrimonio} className="max-w-full w-[250px] bg-card p-4" href={`/equipamentos/${ equipment.Patrimonio }`}>
+                                        <Link key={equipment.patrimonio} className="max-w-full w-[250px] bg-card p-4" href={`/equipamentos/${ equipment.patrimonio }`}>
                                             <header className="flex items-center gap-2 mb-2 px-2">
-                                                <div style={{ background: statusColor(equipment.StatusID) }} className="w-[7px] h-[7px] rounded-full"></div>
-                                                <p className="text-[13px]"> { equipment.StatusID } </p>
+                                                <div style={{ background: statusColor(equipment.statusid) }} className="w-[7px] h-[7px] rounded-full"></div>
+                                                <p className="text-[13px]"> { equipment.statusid } </p>
                                             </header>
                                             <div className="flex items-center gap-2 text-[11px] text-[#ffffff70]">
-                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.NomeID } </p>
-                                                <p className="bg-secondary p-1 rounded"> { equipment.SalaID } </p>
+                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nomeid } </p>
+                                                <p className="bg-secondary p-1 rounded"> { equipment.salaid } </p>
                                             </div>
-                                            <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.Patrimonio : equipment.Item }  </h2>
+                                            <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.patrimonio : equipment.item }  </h2>
                                         </Link>
                                     )) }
                             </div>
@@ -334,21 +334,21 @@ export default function Equipamentos() {
                         <div className="flex justify-center lg:justify-start flex-wrap gap-4 my-3 ">
                             { filteredData
                                 .filter(item => {
-                                    const key = showBy == "patrimonio" ? "Patrimonio" : "Item"
+                                    const key = showBy == "patrimonio" ? "patrimonio" : "item"
                                     return item[key]?.toString().includes(search)
                                 })
                                 .map(equipment => (
-                                    <Link key={equipment.Patrimonio} className="max-w-full w-[250px]" href={`/equipamentos/${ equipment.Patrimonio }`}>
+                                    <Link key={equipment.patrimonio} className="max-w-full w-[250px]" href={`/equipamentos/${ equipment.patrimonio }`}>
                                         <div className="w-full h-full bg-card p-4 rounded">
                                             <header className="flex items-center gap-2 mb-2 px-2">
-                                                <div style={{ background: statusColor(equipment.StatusID) }} className="w-[7px] h-[7px] rounded-full"></div>
-                                                <p className="text-[13px]"> { equipment.StatusID } </p>
+                                                <div style={{ background: statusColor(equipment.statusid) }} className="w-[7px] h-[7px] rounded-full"></div>
+                                                <p className="text-[13px]"> { equipment.statusid } </p>
                                             </header>
                                             <div className="flex items-center gap-2 text-[11px] text-[#ffffff70]">
-                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.NomeID } </p>
-                                                <p className="bg-secondary p-1 rounded"> { equipment.SalaID } </p>
+                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nomeid } </p>
+                                                <p className="bg-secondary p-1 rounded"> { equipment.salaid } </p>
                                             </div>
-                                            <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.Patrimonio : equipment.Item }  </h2>
+                                            <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.patrimonio : equipment.item }  </h2>
                                         </div>
                                     </Link>
                                 )) }

@@ -61,6 +61,9 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        'loader': '0 0 0 0 rgba(0, 0, 0, 0.25)',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -70,10 +73,14 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "l1": {
+          to: { boxShadow: '0 0 0 30px rgba(0, 0, 0, 0)' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'loader': 'l1 1s infinite',
       },
     },
   },
