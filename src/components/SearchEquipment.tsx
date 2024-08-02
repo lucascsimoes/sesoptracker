@@ -11,12 +11,12 @@ export default function SearchEquipment({ list }: { list: IEquipment[] }): React
     return (
         <main className="flex flex-col gap-4 p-10">
             { list.map(item => (
-                <Link key={item.Patrimonio} href={`/equipamento/${item.Patrimonio}`} className="w-full h-full">
+                <Link key={item.patrimonio} href={`/equipamento/${item.patrimonio}`} className="w-full h-full">
                     <CardRevealedPointer className="p-8 rounded-lg">
                         <header>
-                            <p style={{ background: statusColor(item.StatusID) }} className="ml-auto w-fit text-sm text-black rounded px-2 py-1"> { item.StatusID } </p>
+                            <p style={{ background: statusColor(item.statusid) }} className="ml-auto w-fit text-sm text-black rounded px-2 py-1"> { item.statusid } </p>
                         </header>
-                        <h1 className="text-3xl font-semibold"> { item.Patrimonio } </h1>
+                        <h1 className="text-3xl font-semibold"> { item.patrimonio } </h1>
                     </CardRevealedPointer>
                 </Link>
             )) }
