@@ -13,9 +13,6 @@ import axios from "axios";
 import { IEquipment } from "@/interfaces/IEquipment";
 import Loading from "@/components/Loading";
 
-import { BarcodeScanner } from 'react-barcode-scanner'
-import "react-barcode-scanner/polyfill"
-
 
 const EquipmentSchema = Yup.object().shape({
     salaid: Yup.string()
@@ -45,10 +42,8 @@ const initialValues = {
 }
 
 export default function AddEquipment() {
-    
-    const [data, setData] = useState('No result');
 
-    return <BarcodeScanner onCapture={(barcode) => alert(barcode.rawValue + "aaa")}/> 
+    return <p> a </p>
 }
 
 {/* <div className="relative w-dvw h-dvh before:content-['']">
