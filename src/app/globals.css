@@ -13,6 +13,10 @@ body {
   min-height: 100dvh;
 }
 
+fieldset label {
+  @apply block text-[15px] mb-2
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -79,6 +83,34 @@ body {
     --ring: 212.7 26.8% 83.9%;
   }
 }
+
+#html5qr-code-full-region {
+  border: none !important;
+}
+
+#qr-shaded-region {
+  transform: translateY(-18%);
+}
+
+/* 
+
+#html5-qrcode-button-camera-permission,
+#html5qr-code-full-region__header_message,
+#html5qr-code-full-region__dashboard_section {
+  visibility: hidden;
+}
+
+#html5qr-code-full-region {
+  transform: translateY(-25%);
+}
+
+#html5qr-code-full-region__scan_region {
+  transform: translateY(-25%);
+}
+
+#html5qr-code-full-region__scan_region img {
+  display: none;
+} */
 
 @layer base {
   * {

@@ -14,6 +14,18 @@ export async function GET(request: Request) {
   }
 }
 
+export async function POST(request: Request) {
+  try {
+    const { patrimonio, item, lotacao, salaid, categoriaid, nomeid, datacriacao } = await request.json()
+
+    await sql`INSERT INTO equipamentos (patrimonio, item, lotacao, statusid, salaid, categoriaid, nomeid, datacriacao) VALUES (${patrimonio}, ${item}, ${lotacao}, 'Em uso', ${salaid}, ${categoriaid}, ${nomeid}, ${datacriacao})`;
+    
+    return NextResponse.json({ status: 200 })
+  } catch (error) {
+      return NextResponse.json({ error }, { status: 500 });
+  }
+}
+
 export async function PUT(request: Request) {
   try {
     const { statusid, patrimonio } = await request.json()

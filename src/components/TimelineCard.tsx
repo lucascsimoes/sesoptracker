@@ -72,7 +72,7 @@ export default function TimelineCard({ timeline, last }: ITimelineCardProps) {
                         </div>
                     </div>
                 }
-                <div style={{ background: statusColor(timeline.statusatual) }} className="flex items-center justify-center rounded-full relative p-1 relative z-10 border-4 border-card text-stone-950/50">
+                <div style={{ background: statusColor(timeline.statusatual) }} className="flex items-center justify-center rounded-full p-1 relative z-10 border-4 border-card text-stone-950/50">
                     { iconByDescription(currentIcon) }
                 </div>
                 <div style={{ borderColor: statusColor(timeline.statusatual) }} className={`${ last == timeline.id && "border-dashed" } border absolute inset-0 mx-auto w-0.5 h-full`}></div>
@@ -116,10 +116,12 @@ function MoreActions({ timeline, last, handleImportant, removeTimeline }: MoreAc
                     <Flag size={18}/>
                     <p> { timeline.importante ? "Desmarcar" : "Marcar" } como importante </p>
                 </DropdownMenuItem>
-                <DropdownMenuItem disabled={last == timeline.id} onClick={removeTimeline}>
-                    <Trash size={18}/>
-                    <p> Remover </p>
-                </DropdownMenuItem>
+                { timeline.descricao != "Equipamento adicionado ao sistema" && (
+                    <DropdownMenuItem disabled={last == timeline.id} onClick={removeTimeline}>
+                        <Trash size={18}/>
+                        <p> Remover </p>
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>
                     <span className="cursor-default flex items-center justify-center w-[28px] h-[28px] rounded-full bg-secondary text-[10px]"> { timeline.usuario[0] } </span>

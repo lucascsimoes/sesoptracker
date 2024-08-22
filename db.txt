@@ -1,0 +1,9 @@
+Tabela Equipamentos
+    patrimonio SERIAL PRIMARY KEY,
+    item INT,
+    lotacao VARCHAR(35),
+    statusid VARCHAR(20) NOT NULL,
+    salaid VARCHAR(20) NOT NULL,
+    categoriaid VARCHAR(20) NOT NULL,
+    nomeid VARCHAR(50) NOT NULL,
+    datacriacao DATE NOT NULL

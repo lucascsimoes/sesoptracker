@@ -3,13 +3,13 @@ import { NextResponse } from 'next/server';
  
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
-    const id = searchParams.get('id')
+    const patrimonio = searchParams.get('patrimonio')
 
-    if (!id) {
+    if (!patrimonio) {
         const { rows } = await sql`SELECT * FROM historico`;
         return NextResponse.json(rows, { status: 200 });
     } else {
-        const { rows } = await sql`SELECT * FROM historico WHERE id = ${id}`;
+        const { rows } = await sql`SELECT * FROM historico WHERE patrimonio = ${patrimonio}`;
         return NextResponse.json(rows, { status: 200 });
     }
 }

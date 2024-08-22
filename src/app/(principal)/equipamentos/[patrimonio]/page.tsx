@@ -23,10 +23,10 @@ import { IEquipment } from "@/interfaces/IEquipment";
 import { ITimeline } from "@/interfaces/ITimeline";
 import { statusColor } from "@/services/statusColor";
 import axios from "axios";
-import useSWR, { useSWRConfig } from "swr";
-import { revalidatePath } from "next/cache";
+import useSWR, { mutate } from "swr";
 import fetcher from "@/services/fetcher";
 import { showStatus } from "@/lists/status";
+import EquipmentNotFound from "@/components/EquipmentNotFound";
 
 
 
@@ -61,24 +61,26 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
 
     const { data, error, isLoading } = useSWR([`http://localhost:3000/api/historico?patrimonio=${params.patrimonio}`, `http://localhost:3000/api/equipamentos?patrimonio=${params.patrimonio}`], fetcher)
 
+    
     const [currentTab, setCurrentTab] = useState<number>(0)
     const handleCurrentTab = (index: number) => setCurrentTab(index)
-
-    const router = useRouter()
     setDefaultOptions({ locale: ptBR })
-
+    
     if (isLoading || data === undefined) return <p> Carregando... </p>
+    if (data.equipment === undefined) return <EquipmentNotFound/>
     if (error) return <p> Houve um erro </p>
 
     return (
         <main className="flex flex-col p-4 sm:p-12 min-h-dvh h-full">
             <header className="flex items-center gap-12 mb-12">
                 <Button 
+                    asChild
                     variant={"secondary"}
                     className="group w-[35px] h-[35px] p-0"
-                    onClick={() => router.back()}
                 >
-                    <ArrowLeft size={18} className="group-hover:opacity-100 opacity-50 transition-all"/>
+                    <Link href={"/equipamentos"}>
+                        <ArrowLeft size={18} className="group-hover:opacity-100 opacity-50 transition-all"/>
+                    </Link>
                 </Button>
                 <h2 className="text-lg font-[500]"> Equipamento { data.equipment.patrimonio } </h2>
             </header>
@@ -89,7 +91,7 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
                 </div>
                 <div className="flex items-center h-[48px] bg-card-foreground rounded px-4 gap-4 ml-auto">
                     <p className="whitespace-nowrap text-sm"> Adicionado em </p>
-                    <p className="p-2 rounded bg-background text-sm"> { format(data.equipment.datacriacao.split("T")[0], "dd/MM/yyyy")  } </p>
+                    <p className="p-2 rounded bg-background text-sm"> { format(data.equipment.datacriacao, "dd/MM/yyyy")  } </p>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
@@ -117,10 +119,10 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
 
 function InfosTab(equipment: IEquipment) {
 
-    const router = useRouter()
     const { toast } = useToast()
     const [open, setOpen] = useState<boolean>(false)
     const [status, setStatus] = useState<string | null>("")
+
     const handleSubmit = async (values: { observacao: string, usuario: string }) => {
         if (status == "" || status == null) {
             setStatus(null)
@@ -128,10 +130,11 @@ function InfosTab(equipment: IEquipment) {
         }
 
         try {
-            axios.put(`http://localhost:3000/api/equipamentos`, {
+            axios.put("http://localhost:3000/api/equipamentos", {
                 statusid: showStatus.find(item => item.value == status)?.label,
                 patrimonio: equipment.patrimonio
             })
+
             axios.post("http://localhost:3000/api/historico", {
                 patrimonio: equipment.patrimonio,
                 dataalteracao: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
@@ -142,6 +145,9 @@ function InfosTab(equipment: IEquipment) {
                 observacao: values.observacao || null,
                 importante: false
             })
+
+            mutate("http://localhost:3000/api/equipamentos")
+            mutate("http://localhost:3000/api/historico")
         } catch (e: any) {
             toast({
                 description: (
@@ -154,7 +160,6 @@ function InfosTab(equipment: IEquipment) {
             return;
         } finally {
             setOpen(false)
-            router.refresh()
         }
 
         toast({
@@ -267,14 +272,14 @@ function InfosTab(equipment: IEquipment) {
                     <h1 className="text-2xl font-bold"> { equipment.categoriaid } </h1>
                 </div>
                 <div>
-                    <p className="opacity-60 text-sm"> Tipo </p>
+                    <p className="opacity-60 text-sm"> Nome </p>
                     <h1 className="text-2xl font-bold"> { equipment.nomeid } </h1>
                 </div>
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 *:grow *:bg-background *:p-4 *:rounded">
                 <div>
                     <p className="opacity-60 text-sm"> Lotação </p>
-                    <h1 className="text-2xl font-bold"> { equipment.lotacao } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.lotacao ?? "-" } </h1>
                 </div>
                 <div>
                     <p className="opacity-60 text-sm"> Sala </p>

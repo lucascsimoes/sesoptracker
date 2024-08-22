@@ -16,7 +16,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input";
-import { MagicExit, MagicMotion, MagicTabSelect } from "react-magic-motion";
+import { MagicMotion, MagicTabSelect } from "react-magic-motion";
 import fetcher from "@/services/fetcher";
 import { showStatus } from "@/lists/status";
 
@@ -85,14 +85,7 @@ export default function Equipamentos() {
     })
 
     useEffect(() => {
-        if (data !== undefined) {
-            const newData = data.map((item: any) => ({
-                ...item,
-                Item: item.Item == null ? "-" : item.Item
-            }))
-
-            setFilteredData(newData)
-        }
+        if (data !== undefined) setFilteredData(data)
     }, [data])
 
     useEffect(() => {
@@ -144,6 +137,19 @@ export default function Equipamentos() {
 
     if (isLoading || data === undefined) return <p> Carregando... </p>
     if (error) return <p> Houve um erro </p>
+    if (data.length === 0) return (
+        <div className="flex flex-col items-center justify-center gap-2 h-dvh">
+            <h3 className="text-3xl text-center font-bold"> Nenhum equipamento encontrado </h3>
+            <p className="text-stone-600 max-w-[500px] text-center mb-8"> Não há nenhum equipamento adicionado ao sistema. Você pode adicionar um novo equipamento no botão abaixo </p>
+
+            <Link href={'/add/equipamento'}>
+                <Button className="flex items-center text-black w-full gap-2 font-normal">
+                    <Plus size={20} strokeWidth={1.5}/>
+                    <p> Novo equipamento </p>
+                </Button>
+            </Link>
+        </div>
+    )
 
     return (
         <div className="flex min-h-dvh">
@@ -237,7 +243,7 @@ export default function Equipamentos() {
                         open={dialogOpen}
                         onOpenChange={open => setDialogOpen(open)}
                     >
-                        <DialogTrigger className="block lg:hidden flex items-center justify-center bg-secondary min-w-[52px] w-0 h-[52px] rounded">
+                        <DialogTrigger className="lg:hidden flex items-center justify-center bg-secondary min-w-[52px] w-0 h-[52px] rounded">
                             <Filter size={19}/>
                         </DialogTrigger>
                         <DialogContent aria-describedby={undefined} className="sm:w-full">
@@ -303,7 +309,7 @@ export default function Equipamentos() {
                         </Button>
                     </Link>
                 </div>
-                <MagicMotion>
+                {/* <MagicMotion> */}
                     <section>
                     { hash != "" ?
                         links.slice(1).map(link => (
@@ -355,7 +361,7 @@ export default function Equipamentos() {
                         </div>
                     }
                     </section>
-                </MagicMotion>
+                {/* </MagicMotion> */}
             </main>
         </div>
     )

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../globals.css";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function FormLayout({
@@ -10,8 +12,8 @@ export default function FormLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <section className="w-full min-h-dvh h-full">
-        {children}
-    </section>
+    <ScrollArea className="w-full h-dvh">
+      {children}
+    </ScrollArea>
   );
 }
