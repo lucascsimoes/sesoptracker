@@ -23,7 +23,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { ITimeline } from "@/interfaces/ITimeline";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 import ScanbotSDK from "scanbot-web-sdk/ui";
 
@@ -196,7 +196,7 @@ const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => vo
 
 const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, handleForm: (current: number) => void }) => {
     
-    const router = useRouter()
+    // const router = useRouter()
     const [validateOnChangeUser, setValidateOnChangeUser] = useState<boolean>(false)
     const [validateOnChangeComplete, setValidateOnChangeComplete] = useState<boolean>(false)
 
@@ -238,7 +238,7 @@ const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, h
                 usuario: values.usuario
             })
 
-            router.replace("/equipamentos")
+            // router.replace("/equipamentos")
         } catch (e) {
             setOpen(false)
             toast({
