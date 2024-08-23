@@ -23,7 +23,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { ITimeline } from "@/interfaces/ITimeline";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import ScanbotSDK from "scanbot-web-sdk/ui";
 
@@ -84,6 +84,7 @@ export default function AddEquipment(): ReactElement {
 const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => void }) => {
     
     const { data, error } = useSWR([`http://localhost:3000/api/equipamentos`], fetcher)
+    const [scanException, setScanException] = useState<string | null>(null)
     
     const handleSubmit = async (values: { patrimonio: string }, FormikHelpers: { setFieldError: (input: string, message: string) => void }) => {
         if (error) {
@@ -138,12 +139,27 @@ const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => vo
         try {
             const exists = data.some((item: IEquipment) => item.patrimonio.toString() == values)
             if (exists) {
-                throw new Error("Já existe um equipamento com esse patrimônio")
+                toast({
+                    description: (
+                        <div className="flex items-center gap-3">
+                            <CircleX size={18} color="#d63e3e"/>
+                            <p> Já existe um equipamento com esse patrimônio </p>
+                        </div>
+                    )
+                })
+            } else {
+                handleForm(values)
             }
 
-            handleForm(values)
         } catch (error) {
-            console.log("erro")
+            toast({
+                description: (
+                    <div className="flex items-center gap-3">
+                        <CircleX size={18} color="#d63e3e"/>
+                        <p> Houve um erro inesperado. Tente novamente mais tarde </p>
+                    </div>
+                )
+            })
         }
     }
 
@@ -196,7 +212,7 @@ const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => vo
 
 const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, handleForm: (current: number) => void }) => {
     
-    // const router = useRouter()
+    const router = useRouter()
     const [validateOnChangeUser, setValidateOnChangeUser] = useState<boolean>(false)
     const [validateOnChangeComplete, setValidateOnChangeComplete] = useState<boolean>(false)
 
@@ -238,7 +254,7 @@ const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, h
                 usuario: values.usuario
             })
 
-            // router.replace("/equipamentos")
+            router.replace("/equipamentos")
         } catch (e) {
             setOpen(false)
             toast({
