@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FeedbackException from "@/components/FeedbackException";
 import Loading from "@/components/Loading";
-import Html5QrcodePlugin from "@/components/Html5QrcodePlugin";
 import { IEquipment } from "@/interfaces/IEquipment";
 import fetcher from "@/services/fetcher";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -23,7 +22,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { ITimeline } from "@/interfaces/ITimeline";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 import ScanbotSDK from "scanbot-web-sdk/ui";
 
@@ -210,9 +208,7 @@ const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => vo
 }
 
 const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, handleForm: (current: number) => void }) => {
-    "use client"
 
-    const router = useRouter()
     const [validateOnChangeUser, setValidateOnChangeUser] = useState<boolean>(false)
     const [validateOnChangeComplete, setValidateOnChangeComplete] = useState<boolean>(false)
 
@@ -254,7 +250,6 @@ const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, h
                 usuario: values.usuario
             })
 
-            router.push("/equipamentos")
         } catch (e) {
             setOpen(false)
             toast({
