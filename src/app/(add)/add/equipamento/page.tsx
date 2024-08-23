@@ -84,7 +84,6 @@ export default function AddEquipment(): ReactElement {
 const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => void }) => {
     
     const { data, error } = useSWR([`http://localhost:3000/api/equipamentos`], fetcher)
-    const [scanException, setScanException] = useState<string | null>(null)
     
     const handleSubmit = async (values: { patrimonio: string }, FormikHelpers: { setFieldError: (input: string, message: string) => void }) => {
         if (error) {
@@ -211,7 +210,8 @@ const PatrimonioForm = ({ handleForm }: { handleForm: (patrimonio: string) => vo
 }
 
 const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, handleForm: (current: number) => void }) => {
-    
+    "use client"
+
     const router = useRouter()
     const [validateOnChangeUser, setValidateOnChangeUser] = useState<boolean>(false)
     const [validateOnChangeComplete, setValidateOnChangeComplete] = useState<boolean>(false)
@@ -254,7 +254,7 @@ const CompleteForm = ({ patrimonio, handleForm }: { patrimonio: string | null, h
                 usuario: values.usuario
             })
 
-            router.replace("/equipamentos")
+            router.push("/equipamentos")
         } catch (e) {
             setOpen(false)
             toast({
