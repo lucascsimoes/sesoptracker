@@ -25,10 +25,10 @@ export default async function fetcher([...urls]: string[]) {
     } )
     if (urls.length > 1) {
         const promise = await Promise.all(urls.map(f))
-        return {
-            equipment: promise[1][0],
-            timeline: promise[0]
-        }
+        const replaceUrl = urls.map(item => item.replace("?", "/").split("/")[4])
+        const objectUrl = Object.fromEntries(replaceUrl.map((key, index) => [key, promise[index]]));
+
+        return objectUrl
     }
 
     return f(urls[0])

@@ -18,7 +18,7 @@ import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input";
 import { MagicMotion, MagicTabSelect } from "react-magic-motion";
 import fetcher from "@/services/fetcher";
-import { showStatus } from "@/lists/status";
+import { IStatus } from "@/interfaces/IStatus";
 
   
 
@@ -36,8 +36,8 @@ const showByList = [
 ]
 
 function filterStatus(data: IEquipment[], status: string) {
-    if (status != "todos") {
-        return data.filter(item => item.statusid.toLowerCase() == status)
+    if (status != "Todos") {
+        return data.filter(item => item.estado == status)
     }
 
     return data
@@ -45,7 +45,7 @@ function filterStatus(data: IEquipment[], status: string) {
 
 function filterTransferidos(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.statusid != "Transferido")
+        return data.filter(item => item.estado != "Transferido")
     }
 
     return data
@@ -53,7 +53,7 @@ function filterTransferidos(data: IEquipment[], show: boolean) {
 
 function filterDevolvidos(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.statusid != "Devolvido")
+        return data.filter(item => item.estado != "Devolvido")
     }
 
     return data
@@ -61,7 +61,7 @@ function filterDevolvidos(data: IEquipment[], show: boolean) {
 
 function filterEmprestados(data: IEquipment[], show: boolean) {
     if (!show) {
-        return data.filter(item => item.statusid != "Emprestado")
+        return data.filter(item => item.estado != "Emprestado")
     }
 
     return data
@@ -69,7 +69,7 @@ function filterEmprestados(data: IEquipment[], show: boolean) {
 
 export default function Equipamentos() {
 
-    const { data, error, isLoading } = useSWR([`http://localhost:3000/api/equipamentos`], fetcher)
+    const { data, error, isLoading } = useSWR(["http://localhost:3000/api/equipamentos", "http://localhost:3000/api/estados"], fetcher)
     const [filteredData, setFilteredData] = useState<IEquipment[]>([])
 
     const [hash, setHash] = useState<string>("")
@@ -78,20 +78,18 @@ export default function Equipamentos() {
     const [showBy, setShowBy] = useState<string>("patrimonio")
     const [search, setSearch] = useState<string>("")
     const [filters, setFilters] = useState<IFilter>({
-        status: "todos",
+        status: "Todos",
         showTransferido: true,
         showDevolvido: true,
         showEmprestado: true
     })
 
     useEffect(() => {
-        if (data !== undefined) setFilteredData(data)
+        if (data !== undefined) setFilteredData(data.equipamentos)
     }, [data])
 
     useEffect(() => {
-        if (data !== undefined) {
-            handleDataFilter(filters)
-        }
+        if (data !== undefined) handleDataFilter(filters)
     }, [filters])
 
     const changeFilters = {
@@ -125,7 +123,7 @@ export default function Equipamentos() {
     }
 
     async function handleDataFilter(filters: IFilter) {
-        const copy = [...data]
+        const copy = [...data.equipamentos]
         let filtered: IEquipment[]
 
         filtered = filterStatus(copy, filters.status)
@@ -137,7 +135,7 @@ export default function Equipamentos() {
 
     if (isLoading || data === undefined) return <p> Carregando... </p>
     if (error) return <p> Houve um erro </p>
-    if (data.length === 0) return (
+    if (data.equipamentos.length === 0) return (
         <div className="flex flex-col items-center justify-center gap-2 h-dvh">
             <h3 className="text-3xl text-center font-bold"> Nenhum equipamento encontrado </h3>
             <p className="text-stone-600 max-w-[500px] text-center mb-8"> Não há nenhum equipamento adicionado ao sistema. Você pode adicionar um novo equipamento no botão abaixo </p>
@@ -150,6 +148,16 @@ export default function Equipamentos() {
             </Link>
         </div>
     )
+
+    const statusElement = (label: string, color: string) => <div className="flex items-center gap-4"><div style={{ background: color }} className="w-[7px] h-[7px] rounded-full"></div><p className="text-[13px]"> { label } </p></div> 
+    const showStatus = [
+        { value: "Todos", label: "Todos" },
+        ...data.estados.map(({ estado, cor }: IStatus) => ({
+            value: estado,
+            label: estado,
+            element: statusElement(estado, cor)
+        }))
+    ];
 
     return (
         <div className="flex min-h-dvh">
@@ -181,7 +189,7 @@ export default function Equipamentos() {
                         <Switch 
                             defaultChecked={true}
                             checked={filters.showTransferido}
-                            disabled={filters.status !== "todos"}
+                            disabled={filters.status !== "Todos"}
                             onCheckedChange={checked => changeFilters.switchTransferido(checked)}
                         />
                         <h4 className="text-left text-[14px]"> Mostrar transferidos </h4>
@@ -191,7 +199,7 @@ export default function Equipamentos() {
                         <Switch 
                             defaultChecked={true}
                             checked={filters.showDevolvido}
-                            disabled={filters.status !== "todos"}
+                            disabled={filters.status !== "Todos"}
                             onCheckedChange={checked => changeFilters.switchDevolvido(checked)}
                         />
                         <h4 className="text-left text-[14px]"> Mostrar devolvidos </h4>
@@ -201,7 +209,7 @@ export default function Equipamentos() {
                         <Switch 
                             defaultChecked={true}
                             checked={filters.showEmprestado}
-                            disabled={filters.status !== "todos"}
+                            disabled={filters.status !== "Todos"}
                             onCheckedChange={checked => changeFilters.switchEmprestado(checked)}
                         />
                         <h4 className="text-left text-[14px]"> Mostrar emprestados </h4>
@@ -223,7 +231,7 @@ export default function Equipamentos() {
                                 </div>
                             ) }
                             <p className={`group-hover:opacity-100 transition ml-5 mr-auto ${ hash == link.value ? "opach-fullity-100" : "opacity-50" }`}> { link.label } </p>
-                            <span className={`group-hover:opacity-100 text-[11px] font-medium transition ${ hash == link.value ? "opacity-100" : "opacity-50" }`}> { link.label != "Todos" && filteredData.filter(equipmnent => equipmnent.categoriaid == link.label).length } </span>
+                            <span className={`group-hover:opacity-100 text-[11px] font-medium transition ${ hash == link.value ? "opacity-100" : "opacity-50" }`}> { link.label != "Todos" && filteredData.filter(equipmnent => equipmnent.categoria == link.label).length } </span>
                         </Link>
                     )) }
                 </div>
@@ -275,7 +283,7 @@ export default function Equipamentos() {
                                     <Switch 
                                         defaultChecked={true}
                                         checked={filters.showTransferido}
-                                        disabled={filters.status !== "todos"}
+                                        disabled={filters.status !== "Todos"}
                                         onCheckedChange={checked => changeFilters.switchTransferido(checked)}
                                     />
                                     <h4 className="text-left text-[14px]"> Mostrar transferidos </h4>
@@ -285,7 +293,7 @@ export default function Equipamentos() {
                                     <Switch 
                                         defaultChecked={true}
                                         checked={filters.showDevolvido}
-                                        disabled={filters.status !== "todos"}
+                                        disabled={filters.status !== "Todos"}
                                         onCheckedChange={checked => changeFilters.switchDevolvido(checked)}
                                     />
                                     <h4 className="text-left text-[14px]"> Mostrar devolvidos </h4>
@@ -295,7 +303,7 @@ export default function Equipamentos() {
                                     <Switch 
                                         defaultChecked={true}
                                         checked={filters.showEmprestado}
-                                        disabled={filters.status !== "todos"}
+                                        disabled={filters.status !== "Todos"}
                                         onCheckedChange={checked => changeFilters.switchEmprestado(checked)}
                                     />
                                     <h4 className="text-left text-[14px]"> Mostrar emprestados </h4>
@@ -320,16 +328,16 @@ export default function Equipamentos() {
                                         const key = showBy == "patrimonio" ? "patrimonio" : "item"
                                         return item[key]?.toString().includes(search)
                                     })
-                                    .filter(item => item.categoriaid == link.label)
+                                    .filter(item => item.categoria == link.label)
                                     .map(equipment => (
                                         <Link key={equipment.patrimonio} className="max-w-full w-[250px] bg-card p-4" href={`/equipamentos/${ equipment.patrimonio }`}>
                                             <header className="flex items-center gap-2 mb-2 px-2">
-                                                <div style={{ background: statusColor(equipment.statusid) }} className="w-[7px] h-[7px] rounded-full"></div>
-                                                <p className="text-[13px]"> { equipment.statusid } </p>
+                                                <div style={{ background: statusColor(equipment.estado) }} className="w-[7px] h-[7px] rounded-full"></div>
+                                                <p className="text-[13px]"> { equipment.estado } </p>
                                             </header>
                                             <div className="flex items-center gap-2 text-[11px] text-[#ffffff70]">
-                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nomeid } </p>
-                                                <p className="bg-secondary p-1 rounded"> { equipment.salaid } </p>
+                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nome } </p>
+                                                <p className="bg-secondary p-1 rounded"> { equipment.sala } </p>
                                             </div>
                                             <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.patrimonio : equipment.item }  </h2>
                                         </Link>
@@ -347,12 +355,12 @@ export default function Equipamentos() {
                                     <Link key={equipment.patrimonio} className="max-w-full w-[250px]" href={`/equipamentos/${ equipment.patrimonio }`}>
                                         <div className="w-full h-full bg-card p-4 rounded">
                                             <header className="flex items-center gap-2 mb-2 px-2">
-                                                <div style={{ background: statusColor(equipment.statusid) }} className="w-[7px] h-[7px] rounded-full"></div>
-                                                <p className="text-[13px]"> { equipment.statusid } </p>
+                                                <div style={{ background: statusColor(equipment.estado) }} className="w-[7px] h-[7px] rounded-full"></div>
+                                                <p className="text-[13px]"> { equipment.estado } </p>
                                             </header>
                                             <div className="flex items-center gap-2 text-[11px] text-[#ffffff70]">
-                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nomeid } </p>
-                                                <p className="bg-secondary p-1 rounded"> { equipment.salaid } </p>
+                                                <p className="bg-secondary w-full p-1 rounded"> { equipment.nome } </p>
+                                                <p className="bg-secondary p-1 rounded"> { equipment.sala } </p>
                                             </div>
                                             <h2 className="bg-secondary rounded p-2 mt-2 font-bold text-2xl text-center w-full"> { showBy == "patrimonio" ? equipment.patrimonio : equipment.item }  </h2>
                                         </div>

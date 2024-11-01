@@ -60,15 +60,16 @@ const SignupSchema = Yup.object().shape({
 export default function Equipment({ params }: { params: { patrimonio: string } }): ReactElement {
 
     const { data, error, isLoading } = useSWR([`http://localhost:3000/api/historico?patrimonio=${params.patrimonio}`, `http://localhost:3000/api/equipamentos?patrimonio=${params.patrimonio}`], fetcher)
-
     
     const [currentTab, setCurrentTab] = useState<number>(0)
     const handleCurrentTab = (index: number) => setCurrentTab(index)
     setDefaultOptions({ locale: ptBR })
     
     if (isLoading || data === undefined) return <p> Carregando... </p>
-    if (data.equipment === undefined) return <EquipmentNotFound/>
+    if (data.equipamentos === undefined) return <EquipmentNotFound/>
     if (error) return <p> Houve um erro </p>
+
+    const equipamento = data.equipamentos[0]
 
     return (
         <main className="flex flex-col p-4 sm:p-12 min-h-dvh h-full">
@@ -82,7 +83,7 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
                         <ArrowLeft size={18} className="group-hover:opacity-100 opacity-50 transition-all"/>
                     </Link>
                 </Button>
-                <h2 className="text-lg font-[500]"> Equipamento { data.equipment.patrimonio } </h2>
+                <h2 className="text-lg font-[500]"> Equipamento { equipamento.patrimonio } </h2>
             </header>
 
             <div className="flex gap-4 xl:h-[48px] flex-wrap xl:flex-nowrap">
@@ -91,12 +92,12 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
                 </div>
                 <div className="flex items-center h-[48px] bg-card-foreground rounded px-4 gap-4 ml-auto">
                     <p className="whitespace-nowrap text-sm"> Adicionado em </p>
-                    <p className="p-2 rounded bg-background text-sm"> { format(data.equipment.datacriacao, "dd/MM/yyyy")  } </p>
+                    <p className="p-2 rounded bg-background text-sm"> { format(equipamento.datacriacao, "dd/MM/yyyy")  } </p>
                 </div>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <Link href={`/edit/${ data.equipment.patrimonio }`}>
+                            <Link href={`/edit/${ equipamento.patrimonio }`}>
                                 <Button variant={"ghost"} className="w-[48px] h-[48px] p-0">
                                     <Pencil size={18}/>
                                 </Button>
@@ -110,8 +111,8 @@ export default function Equipment({ params }: { params: { patrimonio: string } }
             </div>
 
             <section className="rounded w-full h-full py-16 px-8 lg:p-16 bg-card mt-8">
-                { currentTab === 0 && <InfosTab { ...data.equipment } /> }
-                { currentTab === 1 && <TimelineTab { ...data.timeline } /> }
+                { currentTab === 0 && <InfosTab { ...equipamento } /> }
+                { currentTab === 1 && <TimelineTab { ...data.historico } /> }
             </section>
         </main>
     )
@@ -131,14 +132,14 @@ function InfosTab(equipment: IEquipment) {
 
         try {
             axios.put("http://localhost:3000/api/equipamentos", {
-                statusid: showStatus.find(item => item.value == status)?.label,
+                estado: showStatus.find(item => item.value == status)?.label,
                 patrimonio: equipment.patrimonio
             })
 
             axios.post("http://localhost:3000/api/historico", {
                 patrimonio: equipment.patrimonio,
                 dataalteracao: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-                statusanterior: equipment.statusid,
+                statusanterior: equipment.estado,
                 statusatual: showStatus.find(item => item.value == status)?.label,
                 usuario: values.usuario,
                 descricao: "Status alterado para " + showStatus.find(item => item.value == status)?.label,
@@ -175,7 +176,7 @@ function InfosTab(equipment: IEquipment) {
     return (
         <>
             <header className="flex items-center gap-4 mb-8 flex-wrap sm:flex-nowrap">
-                <p className="rounded py-3 px-6 text-black/40 w-full sm:grow whitespace-nowrap" style={{ background: statusColor(equipment.statusid) }}> { equipment.statusid } </p>
+                <p className="rounded py-3 px-6 text-black/40 w-full sm:grow whitespace-nowrap" style={{ background: statusColor(equipment.estado) }}> { equipment.estado } </p>
                 <Dialog open={open} onOpenChange={open => setOpen(open)}>
                     <DialogTrigger asChild>
                         <Button className="w-full sm:w-fit h-[48px]" variant={"ghost"}> Alterar status </Button>
@@ -215,7 +216,7 @@ function InfosTab(equipment: IEquipment) {
                                 <main className="flex items-end gap-2">
                                     <div className="w-fit">
                                         <p className="text-sm mb-1"> De </p>
-                                        <p style={{ background: statusColor(equipment.statusid) }} className="flex items-center px-4 rounded h-[40px] text-center text-black/50 text-sm"> { equipment.statusid } </p>
+                                        <p style={{ background: statusColor(equipment.estado) }} className="flex items-center px-4 rounded h-[40px] text-center text-black/50 text-sm"> { equipment.estado } </p>
                                     </div>
                                     <MoveRight className="h-[40px]" strokeWidth={1.25}/>
                                     <div className="grow">
@@ -227,7 +228,7 @@ function InfosTab(equipment: IEquipment) {
                                             <SelectContent>
                                                 { showStatus
                                                     .slice(1)
-                                                    .filter(item => item.value !== equipment.statusid.toLowerCase())
+                                                    .filter(item => item.value !== equipment.estado.toLowerCase())
                                                     .map(item => (
                                                         <SelectItem key={item.value} value={item.value}> { item.element } </SelectItem>
                                                 )) }
@@ -269,11 +270,11 @@ function InfosTab(equipment: IEquipment) {
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 my-8 *:grow *:bg-background *:p-4 *:rounded">
                 <div>
                     <p className="opacity-60 text-sm"> Categoria </p>
-                    <h1 className="text-2xl font-bold"> { equipment.categoriaid } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.categoria } </h1>
                 </div>
                 <div>
                     <p className="opacity-60 text-sm"> Nome </p>
-                    <h1 className="text-2xl font-bold"> { equipment.nomeid } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.nome } </h1>
                 </div>
             </div>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 *:grow *:bg-background *:p-4 *:rounded">
@@ -283,7 +284,7 @@ function InfosTab(equipment: IEquipment) {
                 </div>
                 <div>
                     <p className="opacity-60 text-sm"> Sala </p>
-                    <h1 className="text-2xl font-bold"> { equipment.salaid } </h1>
+                    <h1 className="text-2xl font-bold"> { equipment.sala } </h1>
                 </div>
             </div>
         </>

@@ -1,9 +1,34 @@
 Tabela Equipamentos
-    patrimonio SERIAL PRIMARY KEY,
+    patrimonio VARCHAR(15) PRIMARY KEY,
     item INT,
     lotacao VARCHAR(35),
-    statusid VARCHAR(20) NOT NULL,
-    salaid VARCHAR(20) NOT NULL,
-    categoriaid VARCHAR(20) NOT NULL,
-    nomeid VARCHAR(50) NOT NULL,
-    datacriacao DATE NOT NULL
+    categoria VARCHAR(20) NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    datacriacao VARCHAR(20) NOT NULL,
+    situacao INT NOT NULL,
+    sala VARCHAR(7) NOT NULL,
+    CONSTRAINT fk_situacao FOREIGN KEY(situacao) REFERENCES situacoes(id),
+    CONSTRAINT fk_sala FOREIGN KEY(sala) REFERENCES salas(sala)
+
+Tabela historico 
+    id SERIAL PRIMARY KEY,
+    patrimonio VARCHAR(15) NOT NULL,
+    dataalteracao VARCHAR(20) NOT NULL,
+    situacaosanterior INT NOT NULL,
+    situacaoatual INT NOT NULL,
+    usuario VARCHAR(20) NOT NULL,
+    descricao VARCHAR(50) NOT NULL,
+    observacao VARCHAR(250),
+    importante BOOL NOT NULL DEFAULT false,
+    CONSTRAINT fk_patrimonio FOREIGN KEY(patrimonio) REFERENCES equipamentos(patrimonio),
+    CONSTRAINT fk_situacaoanterior FOREIGN KEY(situacaosanterior) REFERENCES situacoes(id),
+    CONSTRAINT fk_situacaoatual FOREIGN KEY(situacaoatual) REFERENCES situacoes(id)
+
+Tabela situacoes
+    id SERIAL PRIMARY KEY,
+    situacao VARCHAR(20) NOT NULL,
+    cor VARCHAR(7) NOT NULL
+
+Tabela salas
+    sala VARCHAR(7) PRIMARY KEY,
+    descricao VARCHAR(25) NOT NULL

@@ -16,12 +16,16 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { patrimonio, item, lotacao, salaid, categoriaid, nomeid, datacriacao } = await request.json()
+    const { patrimonio, item, lotacao, sala, categoria, nome, datacriacao } = await request.json()
+    
+    const result = await sql`SELECT id FROM situacoes WHERE situacao = 'Em uso' LIMIT 1`
+    const statusId = result.rows[0].id
 
-    await sql`INSERT INTO equipamentos (patrimonio, item, lotacao, statusid, salaid, categoriaid, nomeid, datacriacao) VALUES (${patrimonio}, ${item}, ${lotacao}, 'Em uso', ${salaid}, ${categoriaid}, ${nomeid}, ${datacriacao})`;
+    await sql`INSERT INTO equipamentos (patrimonio, item, lotacao, situacao, sala, categoria, nome, datacriacao) VALUES (${patrimonio}, ${item}, ${lotacao}, ${ statusId }, ${sala}, ${categoria}, ${nome}, ${datacriacao})`;
     
     return NextResponse.json({ status: 200 })
   } catch (error) {
+    console.log(error)
       return NextResponse.json({ error }, { status: 500 });
   }
 }

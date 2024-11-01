@@ -10,6 +10,8 @@ export const statusColor = (status: string): string => {
             return "#44cd38"
         case "Emprestado":
             return "#b933a9"
+        case "Inutilizado":
+            return "#1d1d1d"
         default: 
             return "#a0a0a0"
     }   
